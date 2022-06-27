@@ -1,6 +1,6 @@
 import { Context, EntityDict, OperateParams, OperationResult, SelectionResult } from "oak-domain/lib/types";
 import { AmapInstance } from "oak-external-sdk";
-export declare type AspectDict<ED extends EntityDict, Cxt extends Context<ED>> = {
+export declare type CommonAspectDict<ED extends EntityDict, Cxt extends Context<ED>> = {
     operate: <T extends keyof ED>(options: {
         entity: T;
         operation: ED[T]['Operation'] | ED[T]['Operation'][];

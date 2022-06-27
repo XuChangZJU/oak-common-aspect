@@ -8,3 +8,4 @@ declare const aspectDict: {
     getTranslations: typeof getTranslations;
 };
 export default aspectDict;
+export * from './AspectDict';

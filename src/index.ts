@@ -9,3 +9,4 @@ const aspectDict = {
 };
 
 export default aspectDict;
+export * from './AspectDict';
