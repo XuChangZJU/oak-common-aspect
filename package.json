@@ -2,7 +2,7 @@
   "name": "oak-common-aspect",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "lib/index",
   "scripts": {
     "test": "test",
     "build": "tsc"
