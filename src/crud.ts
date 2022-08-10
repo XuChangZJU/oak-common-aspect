@@ -1,7 +1,7 @@
 import { OperateOption, EntityDict, Context, SelectOption, SelectRowShape } from 'oak-domain/lib/types';
 
-export async function operate<ED extends EntityDict, T extends keyof ED, Cxt extends Context<ED>>(
-    params: { entity: T, operation: ED[T]['Operation'] | ED[T]['Operation'][], option?: OperateOption }, context: Cxt) {
+export async function operate<ED extends EntityDict, T extends keyof ED, Cxt extends Context<ED>, OP extends OperateOption>(
+    params: { entity: T, operation: ED[T]['Operation'] | ED[T]['Operation'][], option?: OP }, context: Cxt) {
     const { entity, operation, option } = params;
     if (operation instanceof Array) {
         return await Promise.all(operation.map(
@@ -11,9 +11,9 @@ export async function operate<ED extends EntityDict, T extends keyof ED, Cxt ext
     return await context.rowStore.operate(entity, operation, context, option);
 }
 
-export async function select<ED extends EntityDict, T extends keyof ED, Cxt extends Context<ED>, S extends ED[T]['Selection']>(
-    params: { entity: T, selection: S, option?: SelectOption, getCount?: true }, context: Cxt) {
-    const { entity, selection, option, getCount } = params;
+export async function select<ED extends EntityDict, T extends keyof ED, Cxt extends Context<ED>, S extends ED[T]['Selection'], OP extends SelectOption>(
+    params: { entity: T, selection: S, option?: OP, getCount?: true, maxCount?: number }, context: Cxt) {
+    const { entity, selection, option, getCount, maxCount } = params;
     const { result: data } = await context.rowStore.select(entity, selection, context, option);
     const result = {
         data,
@@ -23,7 +23,7 @@ export async function select<ED extends EntityDict, T extends keyof ED, Cxt exte
     };
     if (getCount) {
         const { filter } = selection;
-        const count = await context.rowStore.count(entity, Object.assign({}, { filter, count: 1000 }), context, option);
+        const count = await context.rowStore.count(entity, Object.assign({}, { filter, count: maxCount || 1000 }), context, option);
         Object.assign(result, {
             count,
         });
