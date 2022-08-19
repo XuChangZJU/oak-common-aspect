@@ -1,6 +1,6 @@
 {
   "name": "oak-common-aspect",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "author": {
     "name": "XuChang"
@@ -16,8 +16,8 @@
   "license": "ISC",
   "dependencies": {
     "lodash": "^4.17.21",
-    "oak-domain": "^1.0.4",
-    "oak-external-sdk": "^1.0.1"
+    "oak-domain": "file:../oak-domain",
+    "oak-external-sdk": "file:../oak-external-sdk"
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
