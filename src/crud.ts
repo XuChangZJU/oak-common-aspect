@@ -1,12 +1,24 @@
 import { OperateOption, EntityDict, Context, SelectOption, SelectRowShape } from 'oak-domain/lib/types';
+import { EntityDict as BaseEntityDict } from 'oak-domain/lib/base-app-domain';
 
-export async function operate<ED extends EntityDict, T extends keyof ED, Cxt extends Context<ED>, OP extends OperateOption>(
+export async function operate<ED extends BaseEntityDict & EntityDict, T extends keyof ED, Cxt extends Context<ED>, OP extends OperateOption>(
     params: { entity: T, operation: ED[T]['Operation'] | ED[T]['Operation'][], option?: OP }, context: Cxt) {
     const { entity, operation, option } = params;
     if (operation instanceof Array) {
-        return await Promise.all(operation.map(
-            (oper) => context.rowStore.operate(entity, oper, context, option)
-        ));
+        const result = [];
+        for (const oper of operation) {
+            const r = await context.rowStore.operate(entity, oper, context, option);
+            result.push(r);
+            if (entity !== 'Oper') {
+                /* await context.rowStore.operate('oper', {
+                    action: 'create',
+                    data: {
+                        
+                    }
+                }, context); */
+            }
+        }
+        return result;
     }
     return await context.rowStore.operate(entity, operation, context, option);
 }

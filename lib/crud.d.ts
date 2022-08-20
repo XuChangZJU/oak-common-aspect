@@ -1,5 +1,6 @@
 import { OperateOption, EntityDict, Context, SelectOption, SelectRowShape } from 'oak-domain/lib/types';
-export declare function operate<ED extends EntityDict, T extends keyof ED, Cxt extends Context<ED>, OP extends OperateOption>(params: {
+import { EntityDict as BaseEntityDict } from 'oak-domain/lib/base-app-domain';
+export declare function operate<ED extends BaseEntityDict & EntityDict, T extends keyof ED, Cxt extends Context<ED>, OP extends OperateOption>(params: {
     entity: T;
     operation: ED[T]['Operation'] | ED[T]['Operation'][];
     option?: OP;
