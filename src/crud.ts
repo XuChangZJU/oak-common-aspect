@@ -13,18 +13,18 @@ export async function operate<ED extends BaseEntityDict & EntityDict, T extends 
     if (operation instanceof Array) {
         const result = [];
         for (const oper of operation) {
-            const r = await context.rowStore.operate(entity, oper, context, option);
+            const r = await context.rowStore.operate(entity, oper, context, option || {});
             result.push(r);
         }
         return result;
     }
-    return await context.rowStore.operate(entity, operation, context, option);
+    return await context.rowStore.operate(entity, operation, context, option || {});
 }
 
 export async function select<ED extends EntityDict, T extends keyof ED, Cxt extends Context<ED>, S extends ED[T]['Selection'], OP extends SelectOption>(
     params: { entity: T, selection: S, option?: OP, getCount?: true, maxCount?: number }, context: Cxt) {
     const { entity, selection, option, getCount, maxCount } = params;
-    const { result: data } = await context.rowStore.select(entity, selection, context, option);
+    const { result: data } = await context.rowStore.select(entity, selection, context, option || {});
     const result = {
         data,
     } as {
@@ -33,7 +33,7 @@ export async function select<ED extends EntityDict, T extends keyof ED, Cxt exte
     };
     if (getCount) {
         const { filter } = selection;
-        const count = await context.rowStore.count(entity, Object.assign({}, { filter, count: maxCount || 1000 }), context, option);
+        const count = await context.rowStore.count(entity, Object.assign({}, { filter, count: maxCount || 1000 }), context, option || {});
         Object.assign(result, {
             count,
         });
