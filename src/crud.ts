@@ -9,7 +9,7 @@ export async function operate<ED extends BaseEntityDict & EntityDict, T extends 
         // operate默认必须用户登录
         throw new OakUnloggedInException();
     }
-    
+
     if (operation instanceof Array) {
         const result = [];
         for (const oper of operation) {
@@ -39,6 +39,14 @@ export async function select<ED extends EntityDict, T extends keyof ED, Cxt exte
         });
     }
     return result;
+}
+
+export async function fetchRows<ED extends EntityDict, OP extends SelectOption, Cxt extends Context<ED>>(params: Array<{ entity: keyof ED, selection: ED[keyof ED]['Selection'], option?: OP }>, context: Cxt) {
+    await Promise.all(
+        params.map(
+            ele => context.rowStore.select(ele.entity, ele.selection, context, ele.option || {})
+        )
+    );
 }
 
 /* 

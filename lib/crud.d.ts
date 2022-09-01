@@ -15,3 +15,8 @@ export declare function select<ED extends EntityDict, T extends keyof ED, Cxt ex
     data: SelectRowShape<ED[T]['Schema'], S['data']>[];
     count?: number | undefined;
 }>;
+export declare function fetchRows<ED extends EntityDict, OP extends SelectOption, Cxt extends Context<ED>>(params: Array<{
+    entity: keyof ED;
+    selection: ED[keyof ED]['Selection'];
+    option?: OP;
+}>, context: Cxt): Promise<void>;

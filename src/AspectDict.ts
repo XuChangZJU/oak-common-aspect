@@ -7,13 +7,14 @@ export type CommonAspectDict<ED extends EntityDict, Cxt extends Context<ED>> = {
         data: SelectRowShape<ED[T]['Schema'], S['data']>[],
         count?: number;
     }>,
+    fetchRows: <OP extends SelectOption>(params: Array<{ entity: keyof ED, selection: ED[keyof ED]['Selection'], option?: OP }>, context: Cxt) => Promise<void>;
     amap: <T extends 'getDrivingPath' | 'regeo' | 'ipLoc' | 'getDistrict' | 'geocode'>(params: {
         key: string;
         method: T;
         data: Parameters<AmapInstance[T]>[0];
-    }) => Promise<any>,
+    }) => Promise<any>;
     getTranslations: (params: {
         namespace: string | string[];
         locale: string;
-    }) => Promise<any>,
+    }) => Promise<any>;
 };

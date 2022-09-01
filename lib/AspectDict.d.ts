@@ -15,6 +15,11 @@ export declare type CommonAspectDict<ED extends EntityDict, Cxt extends Context<
         data: SelectRowShape<ED[T]['Schema'], S['data']>[];
         count?: number;
     }>;
+    fetchRows: <OP extends SelectOption>(params: Array<{
+        entity: keyof ED;
+        selection: ED[keyof ED]['Selection'];
+        option?: OP;
+    }>, context: Cxt) => Promise<void>;
     amap: <T extends 'getDrivingPath' | 'regeo' | 'ipLoc' | 'getDistrict' | 'geocode'>(params: {
         key: string;
         method: T;
