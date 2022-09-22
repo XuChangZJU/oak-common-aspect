@@ -15,6 +15,11 @@ export declare type CommonAspectDict<ED extends EntityDict, Cxt extends Context<
         data: SelectRowShape<ED[T]['Schema'], S['data']>[];
         count?: number;
     }>;
+    count: <T extends keyof ED, S extends ED[T]['Selection'], OP extends SelectOption>(params: {
+        entity: T;
+        selection: S;
+        option?: OP;
+    }, context: Cxt) => Promise<number>;
     fetchRows: <OP extends SelectOption>(params: Array<{
         entity: keyof ED;
         selection: ED[keyof ED]['Selection'];

@@ -20,3 +20,8 @@ export declare function fetchRows<ED extends EntityDict, OP extends SelectOption
     selection: ED[keyof ED]['Selection'];
     option?: OP;
 }>, context: Cxt): Promise<void>;
+export declare function count<ED extends EntityDict, T extends keyof ED, Cxt extends Context<ED>, S extends ED[T]['Selection'], OP extends SelectOption>(params: {
+    entity: T;
+    selection: S;
+    option?: OP;
+}, context: Cxt): Promise<number>;

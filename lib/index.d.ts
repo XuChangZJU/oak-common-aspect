@@ -1,9 +1,10 @@
-import { operate, select, fetchRows } from './crud';
+import { operate, select, fetchRows, count } from './crud';
 import { amap } from './amap';
 import { getTranslations } from './locales';
 declare const aspectDict: {
     operate: typeof operate;
     select: typeof select;
+    count: typeof count;
     fetchRows: typeof fetchRows;
     amap: typeof amap;
     getTranslations: typeof getTranslations;

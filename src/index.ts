@@ -1,9 +1,10 @@
-import { operate, select, fetchRows } from './crud';
+import { operate, select, fetchRows, count } from './crud';
 import { amap } from './amap';
 import { getTranslations } from './locales';
 const aspectDict = {
     operate,
     select,
+    count,
     fetchRows,
     amap,
     getTranslations,
