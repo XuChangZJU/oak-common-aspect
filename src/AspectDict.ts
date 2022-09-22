@@ -1,7 +1,9 @@
 import { Context, EntityDict, OperateOption, SelectOption, OperationResult, SelectRowShape } from "oak-domain/lib/types";
 import { AmapInstance } from "oak-external-sdk";
+import { EntityDict as BaseEntityDict } from 'oak-domain/lib/base-app-domain';
 
-export type CommonAspectDict<ED extends EntityDict, Cxt extends Context<ED>> = {
+
+export type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends Context<ED>> = {
     operate: <T extends keyof ED, OP extends OperateOption>(
         params: {
             entity: T;

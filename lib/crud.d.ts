@@ -15,12 +15,12 @@ export declare function select<ED extends EntityDict, T extends keyof ED, Cxt ex
     data: SelectRowShape<ED[T]['Schema'], S['data']>[];
     count?: number | undefined;
 }>;
-export declare function fetchRows<ED extends EntityDict, OP extends SelectOption, Cxt extends Context<ED>>(params: Array<{
+export declare function fetchRows<ED extends EntityDict & BaseEntityDict, OP extends SelectOption, Cxt extends Context<ED>>(params: Array<{
     entity: keyof ED;
     selection: ED[keyof ED]['Selection'];
     option?: OP;
 }>, context: Cxt): Promise<void>;
-export declare function count<ED extends EntityDict, T extends keyof ED, Cxt extends Context<ED>, S extends ED[T]['Selection'], OP extends SelectOption>(params: {
+export declare function count<ED extends EntityDict & BaseEntityDict, T extends keyof ED, Cxt extends Context<ED>, S extends ED[T]['Selection'], OP extends SelectOption>(params: {
     entity: T;
     selection: S;
     option?: OP;

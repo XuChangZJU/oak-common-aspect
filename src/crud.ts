@@ -94,7 +94,7 @@ export async function select<
 }
 
 export async function fetchRows<
-    ED extends EntityDict,
+    ED extends EntityDict & BaseEntityDict,
     OP extends SelectOption,
     Cxt extends Context<ED>
 >(
@@ -118,7 +118,7 @@ export async function fetchRows<
 }
 
 export async function count<
-    ED extends EntityDict,
+    ED extends EntityDict & BaseEntityDict,
     T extends keyof ED,
     Cxt extends Context<ED>,
     S extends ED[T]['Selection'],
