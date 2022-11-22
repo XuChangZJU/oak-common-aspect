@@ -1,7 +1,8 @@
-import { Context, EntityDict, OperateOption, SelectOption, OperationResult, SelectRowShape } from "oak-domain/lib/types";
+import { EntityDict, OperateOption, SelectOption, OperationResult } from "oak-domain/lib/types";
 import { AmapInstance } from "oak-external-sdk";
 import { EntityDict as BaseEntityDict } from 'oak-domain/lib/base-app-domain';
-export declare type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends Context<ED>> = {
+import { AsyncContext } from "oak-domain/lib/store/AsyncRowStore";
+export declare type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends AsyncContext<ED>> = {
     operate: <T extends keyof ED, OP extends OperateOption>(params: {
         entity: T;
         operation: ED[T]['Operation'] | ED[T]['Operation'][];
@@ -13,7 +14,7 @@ export declare type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt
         option?: OP;
         getCount?: true;
     }, context: Cxt) => Promise<{
-        data: SelectRowShape<ED[T]['Schema'], S['data']>[];
+        data: Partial<ED[T]['Schema']>[];
         count?: number;
     }>;
     count: <T extends keyof ED, S extends ED[T]['Selection'], OP extends SelectOption>(params: {
