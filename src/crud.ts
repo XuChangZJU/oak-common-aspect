@@ -3,6 +3,7 @@ import {
     EntityDict,
     SelectOption,
     OakUnloggedInException,
+    OakUserUnpermittedException,
 } from 'oak-domain/lib/types';
 import { EntityDict as BaseEntityDict } from 'oak-domain/lib/base-app-domain';
 import { AsyncContext } from 'oak-domain/lib/store/AsyncRowStore';
@@ -25,6 +26,9 @@ export async function operate<
     if (!userId) {
         // operate默认必须用户登录
         throw new OakUnloggedInException();
+    }
+    if (!context.allowUserUpdate()) {
+        throw new OakUserUnpermittedException('您被禁更新');
     }
 
     if (operation instanceof Array) {
