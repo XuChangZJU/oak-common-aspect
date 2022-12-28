@@ -118,12 +118,11 @@ export async function count<
     ED extends EntityDict & BaseEntityDict,
     T extends keyof ED,
     Cxt extends AsyncContext<ED>,
-    S extends ED[T]['Selection'],
     OP extends SelectOption
 >(
     params: {
         entity: T;
-        selection: S;
+        selection: Pick<ED[T]['Selection'], 'filter'>;
         option?: OP;
     },
     context: Cxt

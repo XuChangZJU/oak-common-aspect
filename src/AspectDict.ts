@@ -15,10 +15,9 @@ export type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends
     ) => Promise<OperationResult<ED>[] | OperationResult<ED>>;
     select: <
         T extends keyof ED,
-        S extends ED[T]['Selection'],
         OP extends SelectOption
     >(
-        params: { entity: T; selection: S; option?: OP; getCount?: true },
+        params: { entity: T; selection: ED[T]['Selection']; option?: OP; getCount?: true },
         context: Cxt
     ) => Promise<{
         data: Partial<ED[T]['Schema']>[];
@@ -26,10 +25,9 @@ export type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends
     }>;
     count: <
         T extends keyof ED,
-        S extends ED[T]['Selection'],
         OP extends SelectOption
     >(
-        params: { entity: T; selection: S; option?: OP },
+        params: { entity: T; selection: Pick<ED[T]['Selection'], 'filter'>; option?: OP },
         context: Cxt
     ) => Promise<number>;
     fetchRows: <OP extends SelectOption>(
