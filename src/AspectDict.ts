@@ -1,4 +1,4 @@
-import { EntityDict, OperateOption, SelectOption, OperationResult } from "oak-domain/lib/types";
+import { EntityDict, OperateOption, SelectOption, OperationResult, AggregationResult } from "oak-domain/lib/types";
 import { AmapInstance } from "oak-external-sdk";
 import { EntityDict as BaseEntityDict } from 'oak-domain/lib/base-app-domain';
 import { AsyncContext } from "oak-domain/lib/store/AsyncRowStore";
@@ -23,6 +23,14 @@ export type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends
         data: Partial<ED[T]['Schema']>[];
         count?: number;
     }>;
+    aggregate: <T extends keyof ED, OP extends SelectOption>(
+        params: {
+            entity: T;
+            aggregation: ED[T]['Aggregation'];
+            option?: OP;
+        },
+        context: Cxt
+    ) => Promise<AggregationResult<ED[T]['Schema']>>;
     count: <
         T extends keyof ED,
         OP extends SelectOption

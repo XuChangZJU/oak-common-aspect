@@ -16,6 +16,11 @@ export declare function select<ED extends EntityDict, T extends keyof ED, Cxt ex
     data: Partial<ED[T]['Schema']>[];
     count?: number | undefined;
 }>;
+export declare function aggregate<ED extends EntityDict, T extends keyof ED, Cxt extends AsyncContext<ED>, OP extends SelectOption>(params: {
+    entity: T;
+    aggregation: ED[T]['Aggregation'];
+    option?: OP;
+}, context: Cxt): Promise<import("oak-domain/lib/types").AggregationResult<ED[T]["Schema"]>>;
 export declare function fetchRows<ED extends EntityDict & BaseEntityDict, OP extends SelectOption, Cxt extends AsyncContext<ED>>(params: Array<{
     entity: keyof ED;
     selection: ED[keyof ED]['Selection'];

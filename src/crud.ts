@@ -91,6 +91,20 @@ export async function select<
     return result;
 }
 
+export async function aggregate<
+    ED extends EntityDict,
+    T extends keyof ED,
+    Cxt extends AsyncContext<ED>,
+    OP extends SelectOption
+>(params: {
+    entity: T,
+    aggregation: ED[T]['Aggregation'],
+    option?: OP,
+}, context: Cxt) {
+    const { entity, aggregation, option } = params;
+    return context.aggregate(entity, aggregation, option || {});
+}
+
 export async function fetchRows<
     ED extends EntityDict & BaseEntityDict,
     OP extends SelectOption,
