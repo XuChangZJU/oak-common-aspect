@@ -35,6 +35,9 @@ export async function importEntity<
 >(params: FormData, context: Cxt): Promise<void> {
     const entity = params.get('entity') as keyof ED;
     const file = params.get('file') as File;
+    const id = params.get('id') as string;
+    
+    throw new Error('not implement yet');
 }
 
 export async function exportEntity<
@@ -44,6 +47,7 @@ export async function exportEntity<
 >(params: {
     entity: T;
     id: string;
-}, context: Cxt): Promise<ReadableStream> {
-
+    filter?: ED[T]['Selection']['filter'];
+}, context: Cxt): Promise<NodeJS.ReadableStream> {
+    throw new Error('not implement yet');
 }
