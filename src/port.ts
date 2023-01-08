@@ -7,15 +7,26 @@ const Exportations: Record<string, any> = {};
 
 export function registerPorts<ED extends EntityDict>(importations: Importation<ED, keyof ED, any>[], exportations: Exportation<ED, keyof ED, any>[]) {
     for (const i of importations) {
+        assert(!Importations.hasOwnProperty(i.id), `Importation中的id【${i.id}】重复了`);
         Object.assign(Importations, {
             [i.id]: i,
         });
     }
 
     for (const e of exportations) {
+        assert(!Exportations.hasOwnProperty(e.id), `Exportation中的id【${e.id}】重复了`);
         Object.assign(Exportations, {
             [e.id]: e,
         });
+    }
+}
+
+export function clearPorts() {
+    for (const i in Importations) {
+        delete Importations[i];
+    }
+    for (const e in Exportations) {
+        delete Exportations[e];
     }
 }
 

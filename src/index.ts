@@ -1,7 +1,7 @@
 import { operate, select, fetchRows, count, aggregate } from './crud';
 import { amap } from './amap';
 import { getTranslations } from './locales';
-import { registerPorts, importEntity, exportEntity } from './port';
+import { registerPorts, clearPorts, importEntity, exportEntity } from './port';
 const aspectDict = {
     operate,
     select,
@@ -18,4 +18,5 @@ export default aspectDict;
 export * from './AspectDict';
 export {
     registerPorts,
+    clearPorts,
 };
