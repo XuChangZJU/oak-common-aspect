@@ -18,7 +18,7 @@
     "lodash": "^4.17.21",
     "oak-domain": "file:../oak-domain",
     "oak-external-sdk": "file:../oak-external-sdk",
-    "xlsx": "0.18.5"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
