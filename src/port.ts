@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { Importation, Exportation, EntityDict, SelectOption } from 'oak-domain/lib/types/Entity';
+import { EntityDict, SelectOption } from 'oak-domain/lib/types/Entity';
+import { Importation, Exportation } from 'oak-domain/lib/types/Port';
 import { AsyncContext } from 'oak-domain/lib/store/AsyncRowStore';
 
 const Importations: Record<string, any> = {};
@@ -47,6 +48,7 @@ export async function importEntity<
     const entity = params.get('entity') as keyof ED;
     const file = params.get('file') as File;
     const id = params.get('id') as string;
+    const option = params.get('option') as Object;
     
     throw new Error('not implement yet');
 }
@@ -60,5 +62,12 @@ export async function exportEntity<
     id: string;
     filter?: ED[T]['Selection']['filter'];
 }, context: Cxt): Promise<NodeJS.ReadableStream> {
+    throw new Error('not implement yet');
+}
+
+export async function getImportationTemplate<
+ED extends EntityDict,
+Cxt extends AsyncContext<ED>
+>(params: { id: string } , context: Cxt): Promise<NodeJS.ReadableStream>  {
     throw new Error('not implement yet');
 }
