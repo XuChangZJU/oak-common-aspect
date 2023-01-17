@@ -48,11 +48,6 @@ export async function importEntity<
     const entity = params.get('entity') as keyof ED;
     const file = params.get('file') as File;
     const id = params.get('id') as string;
-<<<<<<< HEAD
-    const option = params.get('option') as Object;
-    
-    throw new Error('not implement yet');
-=======
     const arrayBuffer = await file.arrayBuffer();
     const workbook = read(arrayBuffer);
     const { SheetNames, Sheets } = workbook;
@@ -65,7 +60,6 @@ export async function importEntity<
     }
 
     // throw new Error('not implement yet');
->>>>>>> 8533a93fe25ac6bd0406d879dd47c6c17248957c
 }
 
 export async function exportEntity<
