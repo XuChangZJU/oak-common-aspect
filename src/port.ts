@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { Importation, Exportation, EntityDict, SelectOption } from 'oak-domain/lib/types/Entity';
+import { EntityDict, SelectOption } from 'oak-domain/lib/types/Entity';
+import { Importation, Exportation } from 'oak-domain/lib/types/Port';
 import { AsyncContext } from 'oak-domain/lib/store/AsyncRowStore';
 import { read, utils } from 'xlsx';
 const Importations: Record<string, any> = {};
@@ -47,8 +48,7 @@ export async function importEntity<
     const entity = params.get('entity') as keyof ED;
     const file = params.get('file') as File;
     const id = params.get('id') as string;
-    const importation = getImportation(id);
-    const { headers, fn } = importation;
+    const option = params.get('option') as Object;
     const arrayBuffer = await file.arrayBuffer();
     const workbook = read(arrayBuffer);
     const { SheetNames, Sheets } = workbook;
@@ -57,6 +57,7 @@ export async function importEntity<
         const dataList = utils.sheet_to_json(
             sheet
         );
+        console.log(dataList);
     }
 
     // throw new Error('not implement yet');
@@ -72,4 +73,11 @@ export async function exportEntity<
     filter?: ED[T]['Selection']['filter'];
 }, context: Cxt): Promise<NodeJS.ReadableStream> {
     throw new Error('export not implement yet');
+}
+
+export async function getImportationTemplate<
+    ED extends EntityDict,
+    Cxt extends AsyncContext<ED>
+>(params: { id: string }, context: Cxt): Promise<NodeJS.ReadableStream> {
+    throw new Error('not implement yet');
 }
