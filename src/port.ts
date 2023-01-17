@@ -47,6 +47,8 @@ export async function importEntity<
     const entity = params.get('entity') as keyof ED;
     const file = params.get('file') as File;
     const id = params.get('id') as string;
+    const importation = getImportation(id);
+    const { headers, fn } = importation;
     const arrayBuffer = await file.arrayBuffer();
     const workbook = read(arrayBuffer);
     const { SheetNames, Sheets } = workbook;
@@ -55,7 +57,13 @@ export async function importEntity<
         const dataList = utils.sheet_to_json(
             sheet
         );
-        console.log(dataList);
+        for (const row of dataList) {
+            try {
+                const createData = await fn(row as Record<string, string | number | boolean>);
+            } catch (err) {
+
+            }
+        }
     }
 
     // throw new Error('not implement yet');
