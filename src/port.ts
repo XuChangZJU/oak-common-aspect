@@ -57,13 +57,6 @@ export async function importEntity<
         const dataList = utils.sheet_to_json(
             sheet
         );
-        for (const row of dataList) {
-            try {
-                const createData = await fn(row as Record<string, string | number | boolean>);
-            } catch (err) {
-
-            }
-        }
     }
 
     // throw new Error('not implement yet');

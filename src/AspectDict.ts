@@ -67,4 +67,5 @@ export type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends
         id: string;
         filter?: ED[T]['Selection']['filter'];
     }, context: Cxt) => Promise<NodeJS.ReadableStream>;
+    getImportationTemplate: (params: { id: string}, context: Cxt ) => Promise<NodeJS.ReadableStream>;
 };
