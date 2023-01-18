@@ -2,7 +2,8 @@ import assert from 'assert';
 import { EntityDict, SelectOption } from 'oak-domain/lib/types/Entity';
 import { Importation, Exportation } from 'oak-domain/lib/types/Port';
 import { AsyncContext } from 'oak-domain/lib/store/AsyncRowStore';
-import { read, utils } from 'xlsx';
+import { read, utils, write } from 'xlsx';
+import { buffer } from 'stream/consumers';
 const Importations: Record<string, any> = {};
 const Exportations: Record<string, any> = {};
 
@@ -32,6 +33,7 @@ export function clearPorts() {
 }
 
 function getImportation<ED extends EntityDict, T extends keyof ED>(id: string) {
+    console.log(Importations);
     assert(Importations.hasOwnProperty(id), `id为[${id}]的importation不存在`);
     return Importations[id] as Importation<ED, T, any>;
 }
@@ -44,22 +46,39 @@ function getExportation<ED extends EntityDict, T extends keyof ED>(id: string) {
 export async function importEntity<
     ED extends EntityDict,
     Cxt extends AsyncContext<ED>
->(params: FormData, context: Cxt): Promise<void> {
+>(params: FormData, context: Cxt): Promise<NodeJS.ReadableStream | void> {
     const entity = params.get('entity') as keyof ED;
     const file = params.get('file') as File;
     const id = params.get('id') as string;
-    const option = params.get('option') as Object;
+    const option = JSON.parse(params.get('option') as string);
+    const importation = getImportation<ED, keyof ED>(id);
+    const { fn } = importation;
     const arrayBuffer = await file.arrayBuffer();
     const workbook = read(arrayBuffer);
     const { SheetNames, Sheets } = workbook;
+    const errorSheets = [];
     for (const sheetName of SheetNames) {
         const sheet = Sheets[sheetName];
         const dataList = utils.sheet_to_json(
             sheet
         );
-        console.log(dataList);
+        const errorMessageList = await fn(dataList as Record<string, string | number | boolean>[], context, option);
+        if (errorMessageList.length > 0) {
+            errorSheets.push(
+                {
+                    sheetName,
+                    worksheet: utils.json_to_sheet(errorMessageList),
+                }
+            );
+        }
     }
-
+    if (errorSheets.length > 0) {
+        const errorWorkbook = utils.book_new();
+        for (const sheetData of errorSheets) {
+            utils.book_append_sheet(errorWorkbook, sheetData.worksheet, sheetData.sheetName);
+        }
+        return await write(errorWorkbook, { type: 'buffer' });
+    }
     // throw new Error('not implement yet');
 }
 
