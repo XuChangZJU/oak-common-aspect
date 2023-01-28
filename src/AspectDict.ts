@@ -47,11 +47,11 @@ export type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends
     ) => Promise<void>;
     amap: <
         T extends
-            | 'getDrivingPath'
-            | 'regeo'
-            | 'ipLoc'
-            | 'getDistrict'
-            | 'geocode'
+        | 'getDrivingPath'
+        | 'regeo'
+        | 'ipLoc'
+        | 'getDistrict'
+        | 'geocode'
     >(params: {
         key: string;
         method: T;
@@ -61,11 +61,11 @@ export type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends
         namespace: string | string[];
         locale: string;
     }) => Promise<any>;
-    importEntity: (params: FormData, context: Cxt) => Promise<void>;
+    importEntity: (params: FormData, context: Cxt) => Promise<void | NodeJS.ReadableStream>;
     exportEntity: <T extends keyof ED>(params: {
         entity: T;
         id: string;
         filter?: ED[T]['Selection']['filter'];
     }, context: Cxt) => Promise<NodeJS.ReadableStream>;
-    getImportationTemplate: (params: { id: string}, context: Cxt ) => Promise<NodeJS.ReadableStream>;
+    getImportationTemplate: (params: { id: string }, context: Cxt) => Promise<NodeJS.ReadableStream>;
 };

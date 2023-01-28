@@ -42,7 +42,7 @@ export declare type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt
         namespace: string | string[];
         locale: string;
     }) => Promise<any>;
-    importEntity: (params: FormData, context: Cxt) => Promise<void>;
+    importEntity: (params: FormData, context: Cxt) => Promise<void | NodeJS.ReadableStream>;
     exportEntity: <T extends keyof ED>(params: {
         entity: T;
         id: string;
