@@ -77,7 +77,7 @@ export async function importEntity<
         for (const sheetData of errorSheets) {
             utils.book_append_sheet(errorWorkbook, sheetData.worksheet, sheetData.sheetName);
         }
-        return await write(errorWorkbook, { type: 'buffer' });
+        return await write(errorWorkbook, { type: 'file' });
     }
     // throw new Error('not implement yet');
 }
