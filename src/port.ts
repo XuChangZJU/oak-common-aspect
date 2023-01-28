@@ -4,6 +4,7 @@ import { Importation, Exportation } from 'oak-domain/lib/types/Port';
 import { AsyncContext } from 'oak-domain/lib/store/AsyncRowStore';
 import { read, utils, write } from 'xlsx';
 import { buffer } from 'stream/consumers';
+import { Duplex } from 'stream';
 const Importations: Record<string, any> = {};
 const Exportations: Record<string, any> = {};
 
@@ -46,7 +47,7 @@ function getExportation<ED extends EntityDict, T extends keyof ED>(id: string) {
 export async function importEntity<
     ED extends EntityDict,
     Cxt extends AsyncContext<ED>
->(params: FormData, context: Cxt): Promise<NodeJS.ReadableStream | void> {
+>(params: FormData, context: Cxt): Promise<ArrayBuffer | void> {
     const entity = params.get('entity') as keyof ED;
     const file = params.get('file') as File;
     const id = params.get('id') as string;
@@ -57,6 +58,7 @@ export async function importEntity<
     const workbook = read(arrayBuffer);
     const { SheetNames, Sheets } = workbook;
     const errorSheets = [];
+
     for (const sheetName of SheetNames) {
         const sheet = Sheets[sheetName];
         const dataList = utils.sheet_to_json(
@@ -77,7 +79,7 @@ export async function importEntity<
         for (const sheetData of errorSheets) {
             utils.book_append_sheet(errorWorkbook, sheetData.worksheet, sheetData.sheetName);
         }
-        return await write(errorWorkbook, { type: 'file' });
+        return await write(errorWorkbook, { type: 'buffer' });
     }
     // throw new Error('not implement yet');
 }
