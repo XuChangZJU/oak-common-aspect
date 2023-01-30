@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { EntityDict, OperateOption, SelectOption, OperationResult, AggregationResult } from "oak-domain/lib/types";
 import { AmapInstance } from "oak-external-sdk";
 import { EntityDict as BaseEntityDict } from 'oak-domain/lib/base-app-domain';
@@ -47,8 +46,8 @@ export declare type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt
         entity: T;
         id: string;
         filter?: ED[T]['Selection']['filter'];
-    }, context: Cxt) => Promise<NodeJS.ReadableStream>;
+    }, context: Cxt) => Promise<ArrayBuffer>;
     getImportationTemplate: (params: {
         id: string;
-    }, context: Cxt) => Promise<NodeJS.ReadableStream>;
+    }, context: Cxt) => Promise<ArrayBuffer>;
 };

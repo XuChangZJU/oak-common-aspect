@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { EntityDict } from 'oak-domain/lib/types/Entity';
 import { Importation, Exportation } from 'oak-domain/lib/types/Port';
 import { AsyncContext } from 'oak-domain/lib/store/AsyncRowStore';
@@ -9,7 +8,7 @@ export declare function exportEntity<ED extends EntityDict, T extends keyof ED, 
     entity: T;
     id: string;
     filter?: ED[T]['Selection']['filter'];
-}, context: Cxt): Promise<NodeJS.ReadableStream>;
+}, context: Cxt): Promise<ArrayBuffer>;
 export declare function getImportationTemplate<ED extends EntityDict, Cxt extends AsyncContext<ED>>(params: {
     id: string;
-}, context: Cxt): Promise<NodeJS.ReadableStream>;
+}, context: Cxt): Promise<ArrayBuffer>;

@@ -53,6 +53,9 @@ export async function importEntity<
     const id = params.get('id') as string;
     const option = JSON.parse(params.get('option') as string);
     const importation = getImportation<ED, keyof ED>(id);
+    if (!importation) {
+        throw new Error('尚不支持此数据的导入');
+    }
     const { fn } = importation;
     const arrayBuffer = await file.arrayBuffer();
     const workbook = read(arrayBuffer);
@@ -92,13 +95,46 @@ export async function exportEntity<
     entity: T;
     id: string;
     filter?: ED[T]['Selection']['filter'];
-}, context: Cxt): Promise<NodeJS.ReadableStream> {
-    throw new Error('export not implement yet');
+}, context: Cxt): Promise<ArrayBuffer> {
+    const id = params.id;
+    const filter = params.filter;
+    const exportation = getExportation<ED, keyof ED>(id);
+    if (!exportation) {
+        throw new Error('尚不支持此数据的导出');
+    }
+    const { projection, headers, fn, entity } = exportation;
+    const dataList = await context.select(
+        entity,
+        {
+            filter,
+            data: projection,
+        },
+        {}
+    );
+    const fittedDatalist = []
+    for (const data of dataList) {
+        fittedDatalist.push(fn(data as ED[keyof ED]['Schema']));
+    }
+    const exportSheet = utils.json_to_sheet(fittedDatalist, { header: headers });
+    const exportBook = utils.book_new();
+    utils.book_append_sheet(exportBook, exportSheet);
+    return await write(exportBook, { type: 'buffer' });
+    // throw new Error('export not implement yet');
 }
 
 export async function getImportationTemplate<
     ED extends EntityDict,
     Cxt extends AsyncContext<ED>
->(params: { id: string }, context: Cxt): Promise<NodeJS.ReadableStream> {
-    throw new Error('not implement yet');
+>(params: { id: string }, context: Cxt): Promise<ArrayBuffer> {
+    const id = params.id;
+    const importation = getImportation<ED, keyof ED>(id);
+    const { headers } = importation;
+    if (!importation) {
+        throw new Error('未找到对应的模板');
+    }
+    const exportSheet = utils.json_to_sheet([], { header: headers });
+    const exportBook = utils.book_new();
+    utils.book_append_sheet(exportBook, exportSheet);
+    return await write(exportBook, { type: 'buffer' });
+    // throw new Error('not implement yet');
 }
