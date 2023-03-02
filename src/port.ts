@@ -47,18 +47,23 @@ function getExportation<ED extends EntityDict, T extends keyof ED>(id: string) {
 export async function importEntity<
     ED extends EntityDict,
     Cxt extends AsyncContext<ED>
->(params: FormData, context: Cxt): Promise<ArrayBuffer | void> {
-    const entity = params.get('entity') as keyof ED;
-    const file = params.get('file') as File;
-    const id = params.get('id') as string;
-    const option = JSON.parse(params.get('option') as string);
+>(params: {
+    entity: string,
+    id: string,
+    file: File,
+    option: string,
+}, context: Cxt): Promise<ArrayBuffer | void> {
+    const entity = params.entity;
+    const file = params.file;
+    const id = params.id;
+    const option = JSON.parse(params.option);
     const importation = getImportation<ED, keyof ED>(id);
     if (!importation) {
         throw new Error('尚不支持此数据的导入');
     }
     const { fn } = importation;
-    const arrayBuffer = await file.arrayBuffer();
-    const workbook = read(arrayBuffer);
+    // const arrayBuffer = await file.arrayBuffer();
+    const workbook = read(file, { type: 'buffer' });
     const { SheetNames, Sheets } = workbook;
     const errorSheets = [];
 
