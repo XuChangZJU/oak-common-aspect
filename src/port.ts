@@ -2,7 +2,7 @@ import assert from 'assert';
 import { EntityDict, SelectOption } from 'oak-domain/lib/types/Entity';
 import { Importation, Exportation } from 'oak-domain/lib/types/Port';
 import { AsyncContext } from 'oak-domain/lib/store/AsyncRowStore';
-import { read, utils, write } from 'xlsx';
+import { read, utils, write, readFile } from 'xlsx';
 import { buffer } from 'stream/consumers';
 import { Duplex } from 'stream';
 const Importations: Record<string, any> = {};
@@ -49,7 +49,7 @@ export async function importEntity<
 >(params: {
     entity: string,
     id: string,
-    file: File,
+    file: any,    // 是否链接后台的file类型不一致，暂时无法解决
     option: string,
 }, context: Cxt): Promise<ArrayBuffer | void> {
     const entity = params.entity;
@@ -62,7 +62,7 @@ export async function importEntity<
     }
     const { fn } = importation;
     // const arrayBuffer = await file.arrayBuffer();
-    const workbook = read(file, { type: 'buffer' });
+    const workbook = readFile(file.filepath, { type: 'buffer' });
     const { SheetNames, Sheets } = workbook;
     const errorSheets = [];
 
