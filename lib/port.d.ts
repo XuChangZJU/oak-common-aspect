@@ -6,7 +6,7 @@ export declare function clearPorts(): void;
 export declare function importEntity<ED extends EntityDict, Cxt extends AsyncContext<ED>>(params: {
     entity: string;
     id: string;
-    file: File;
+    file: any;
     option: string;
 }, context: Cxt): Promise<ArrayBuffer | void>;
 export declare function exportEntity<ED extends EntityDict, T extends keyof ED, Cxt extends AsyncContext<ED>>(params: {
