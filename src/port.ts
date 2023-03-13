@@ -34,7 +34,6 @@ export function clearPorts() {
 }
 
 function getImportation<ED extends EntityDict, T extends keyof ED>(id: string) {
-    console.log(Importations);
     assert(Importations.hasOwnProperty(id), `id为[${id}]的importation不存在`);
     return Importations[id] as Importation<ED, T, any>;
 }
@@ -138,6 +137,14 @@ export async function getImportationTemplate<
         throw new Error('未找到对应的模板');
     }
     const exportSheet = utils.json_to_sheet([], { header: headers });
+    const widthList = headers.map(
+        (ele: string) => {
+            return {
+                width: ele.length * 2.2,
+            };
+        }
+    )
+    exportSheet['!cols'] = widthList;
     const exportBook = utils.book_new();
     utils.book_append_sheet(exportBook, exportSheet);
     return await write(exportBook, { type: 'buffer' });
