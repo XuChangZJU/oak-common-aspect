@@ -7,6 +7,8 @@ import {
 } from 'oak-domain/lib/types';
 import { EntityDict as BaseEntityDict } from 'oak-domain/lib/base-app-domain';
 import { AsyncContext } from 'oak-domain/lib/store/AsyncRowStore';
+import { judgeRelation } from 'oak-domain/lib/store/relation';
+import { getCascadeEntityFilter } from 'oak-domain/lib/store/filter';
 
 export async function operate<
     ED extends BaseEntityDict & EntityDict,
@@ -87,6 +89,44 @@ export async function select<
         Object.assign(result, {
             count,
         });
+    }
+
+    /**
+     * 若selection的projection和filter中同时对某一个外键有限制，此时这条属性路径可能会有关于此对象的权限判定。
+     * 若此时Data为空，则路径上的中间对象不会被返回，会导致前台的权限判定不完整
+     * 如 sku的create权限（jichuang项目）, sku.companyService.company上有user relation
+     * 如果sku为空，也应当试着把companyService数据返回给前台
+     * by Xc 20230320
+     */
+    if (data.length === 0) {
+        const { data,  filter } = selection;
+        for (const attr in data) {
+            const rel = judgeRelation(context.getSchema(), entity, attr);
+            if (rel === 2) {
+                const f = filter && getCascadeEntityFilter(filter, attr);
+                if (f) {
+                    await context.select(attr, {
+                        data: data[attr],
+                        filter: f,
+                        indexFrom: 0,
+                        count: 1,           // 取一行应该就够了
+                    },
+                    option || {})
+                }
+            }
+            else if (typeof rel === 'string') {
+                const f = filter && getCascadeEntityFilter(filter, attr);
+                if (f) {
+                    await context.select(rel, {
+                        data: data[attr],
+                        filter: f,
+                        indexFrom: 0,
+                        count: 1,           // 取一行应该就够了
+                    },
+                    option || {})
+                }
+            }
+        }
     }
     return result;
 }
