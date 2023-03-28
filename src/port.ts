@@ -2,7 +2,7 @@ import assert from 'assert';
 import { EntityDict, SelectOption } from 'oak-domain/lib/types/Entity';
 import { Importation, Exportation } from 'oak-domain/lib/types/Port';
 import { AsyncContext } from 'oak-domain/lib/store/AsyncRowStore';
-import { read, utils, write } from 'xlsx';
+import { read, utils, write, readFile } from 'xlsx';
 import { buffer } from 'stream/consumers';
 import { Duplex } from 'stream';
 const Importations: Record<string, any> = {};
@@ -34,7 +34,6 @@ export function clearPorts() {
 }
 
 function getImportation<ED extends EntityDict, T extends keyof ED>(id: string) {
-    console.log(Importations);
     assert(Importations.hasOwnProperty(id), `id为[${id}]的importation不存在`);
     return Importations[id] as Importation<ED, T, any>;
 }
@@ -47,18 +46,23 @@ function getExportation<ED extends EntityDict, T extends keyof ED>(id: string) {
 export async function importEntity<
     ED extends EntityDict,
     Cxt extends AsyncContext<ED>
->(params: FormData, context: Cxt): Promise<ArrayBuffer | void> {
-    const entity = params.get('entity') as keyof ED;
-    const file = params.get('file') as File;
-    const id = params.get('id') as string;
-    const option = JSON.parse(params.get('option') as string);
+>(params: {
+    entity: string,
+    id: string,
+    file: any,    // 是否链接后台的file类型不一致，暂时无法解决
+    option: string,
+}, context: Cxt): Promise<ArrayBuffer | void> {
+    const entity = params.entity;
+    const file = params.file;
+    const id = params.id;
+    const option = JSON.parse(params.option);
     const importation = getImportation<ED, keyof ED>(id);
     if (!importation) {
         throw new Error('尚不支持此数据的导入');
     }
     const { fn } = importation;
-    const arrayBuffer = await file.arrayBuffer();
-    const workbook = read(arrayBuffer);
+    // const arrayBuffer = await file.arrayBuffer();
+    const workbook = readFile(file.filepath, { type: 'buffer' });
     const { SheetNames, Sheets } = workbook;
     const errorSheets = [];
 
@@ -133,6 +137,14 @@ export async function getImportationTemplate<
         throw new Error('未找到对应的模板');
     }
     const exportSheet = utils.json_to_sheet([], { header: headers });
+    const widthList = headers.map(
+        (ele: string) => {
+            return {
+                width: ele.length * 2.2,
+            };
+        }
+    )
+    exportSheet['!cols'] = widthList;
     const exportBook = utils.book_new();
     utils.book_append_sheet(exportBook, exportSheet);
     return await write(exportBook, { type: 'buffer' });
