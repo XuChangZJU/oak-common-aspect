@@ -2,6 +2,7 @@ import { operate, select, fetchRows, count, aggregate } from './crud';
 import { amap } from './amap';
 import { getTranslations } from './locales';
 import { registerPorts, clearPorts, importEntity, exportEntity, getImportationTemplate } from './port';
+import { searchPoi } from './geo';
 declare const aspectDict: {
     operate: typeof operate;
     select: typeof select;
@@ -13,6 +14,7 @@ declare const aspectDict: {
     importEntity: typeof importEntity;
     exportEntity: typeof exportEntity;
     getImportationTemplate: typeof getImportationTemplate;
+    searchPoi: typeof searchPoi;
 };
 export default aspectDict;
 export * from './AspectDict';

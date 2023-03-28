@@ -50,4 +50,16 @@ export declare type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt
     getImportationTemplate: (params: {
         id: string;
     }, context: Cxt) => Promise<ArrayBuffer>;
+    searchPoi: (options: {
+        value: string;
+        areaCode?: string;
+        indexFrom?: number;
+        count?: number;
+        typeCode?: string;
+    }) => Promise<{
+        id: string;
+        areaId: string;
+        poiName: string;
+        coordinate: [number, number];
+    }[]>;
 };
