@@ -14,6 +14,9 @@ type DmfwPoi = {
     },
     place_type: string;
     place_code: string;
+    area_name: string;
+    city_name: string;
+    province_name: string;
 }
 
 export async function searchPoi(options: {
@@ -42,7 +45,8 @@ export async function searchPoi(options: {
     const pois = await Promise.all(
         records.map(
             async (ele: DmfwPoi) => {
-                let { area, standard_name, gdm, id } = ele;
+                let { area, standard_name, gdm, id, 
+                    province_name, city_name, area_name, place_type } = ele;
                 // 对返回的area数据进行一些清洗，不规范
                 if(area.length === 9) {
                     if (area.endsWith('999')) {
@@ -59,6 +63,7 @@ export async function searchPoi(options: {
                     areaId: area,
                     poiName: standard_name,
                     coordinate: gdm.coordinates[0],
+                    detail: `${province_name}${city_name}${area_name}${standard_name}(${place_type})`,
                 };
             }
         )

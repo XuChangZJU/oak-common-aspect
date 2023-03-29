@@ -60,6 +60,7 @@ export declare type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt
         id: string;
         areaId: string;
         poiName: string;
+        detail: string;
         coordinate: [number, number];
     }[]>;
 };

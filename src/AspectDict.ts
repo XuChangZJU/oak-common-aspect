@@ -74,5 +74,5 @@ export type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends
         indexFrom?: number;
         count?: number;
         typeCode?: string;
-    }) => Promise<{ id: string; areaId: string; poiName: string; coordinate: [number, number] }[]>;
+    }) => Promise<{ id: string; areaId: string; poiName: string; detail: string; coordinate: [number, number] }[]>;
 };
