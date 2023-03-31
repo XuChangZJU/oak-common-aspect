@@ -19,7 +19,7 @@ export type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends
         params: { entity: T; selection: ED[T]['Selection']; option?: OP; getCount?: true },
         context: Cxt
     ) => Promise<{
-        data: Partial<ED[T]['Schema']>[];
+        ids: string[];
         count?: number;
     }>;
     aggregate: <T extends keyof ED, OP extends SelectOption>(
