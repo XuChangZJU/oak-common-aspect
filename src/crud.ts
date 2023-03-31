@@ -74,9 +74,9 @@ export async function select<
         option || {}
     );
     const result = {
-        data,
+        ids: data.map(ele => ele.id),
     } as {
-        data: Partial<ED[T]['Schema']>[];
+        ids: string[];
         count?: number;
     };
     if (getCount) {

@@ -13,7 +13,7 @@ export declare function select<ED extends EntityDict, T extends keyof ED, Cxt ex
     getCount?: true;
     maxCount?: number;
 }, context: Cxt): Promise<{
-    data: Partial<ED[T]['Schema']>[];
+    ids: string[];
     count?: number | undefined;
 }>;
 export declare function aggregate<ED extends EntityDict, T extends keyof ED, Cxt extends AsyncContext<ED>, OP extends SelectOption>(params: {
