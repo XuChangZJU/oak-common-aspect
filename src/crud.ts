@@ -105,7 +105,7 @@ function pruneAggrResult<
         (row) => pruneInner(entity, row)
     );
     if (result2.find(
-        ele => !ele
+        ele => !!ele
     )) {
         return result2;
     }
