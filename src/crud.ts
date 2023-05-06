@@ -4,11 +4,13 @@ import {
     SelectOption,
     OakUnloggedInException,
     OakUserUnpermittedException,
+    StorageSchema,
 } from 'oak-domain/lib/types';
 import { EntityDict as BaseEntityDict } from 'oak-domain/lib/base-app-domain';
 import { AsyncContext } from 'oak-domain/lib/store/AsyncRowStore';
 import { judgeRelation } from 'oak-domain/lib/store/relation';
 import { getCascadeEntityFilter } from 'oak-domain/lib/store/filter';
+import assert from 'assert';
 
 export async function operate<
     ED extends BaseEntityDict & EntityDict,
@@ -52,8 +54,65 @@ export async function operate<
     );
 }
 
+function pruneAggrResult<
+    ED extends BaseEntityDict & EntityDict,
+    T extends keyof ED>(schema: StorageSchema<ED>, entity: T, result: Partial<ED[T]['Schema']>[]) {
+    
+    const pruneInner = (e: keyof ED, r: Partial<ED[keyof ED]['Schema']>): Partial<ED[keyof ED]['Schema']> | undefined => {
+        const r2 = {};
+        let hasAggr = false;
+        for (const attr in r) {
+            if (attr.endsWith('$$aggr')) {
+                hasAggr = true;
+                Object.assign(r2, {
+                    [attr]: r[attr],
+                });
+            }
+            else if (typeof r[attr] === 'object') {
+                const rel = judgeRelation(schema, e, attr);
+                if (rel === 2 || typeof rel === 'string') {
+                    const rr = pruneInner(rel === 2 ? attr : rel, r[attr]!);
+                    if (rr) {
+                        hasAggr = true;
+                        Object.assign(r2, {
+                            [attr]: rr,
+                        });
+                    }
+                }
+                else if (rel instanceof Array) {
+                    assert(r[attr] as any instanceof Array);
+                    const rr = r[attr].map(
+                        (ele: any) => pruneInner(rel[0], ele)
+                    );
+                    if (rr.find(
+                        (ele: any) => !ele
+                    )) {
+                        hasAggr = true;
+                        Object.assign(r2, {
+                            [attr]: rr,
+                        });
+                    }
+                }
+            }
+        }
+        if (hasAggr) {
+            return r2;
+        }
+        return;
+    };
+
+    const result2 = result.map(
+        (row) => pruneInner(entity, row)
+    );
+    if (result2.find(
+        ele => !ele
+    )) {
+        return result2;
+    }
+}
+
 export async function select<
-    ED extends EntityDict,
+    ED extends BaseEntityDict & EntityDict,
     T extends keyof ED,
     Cxt extends AsyncContext<ED>,
     OP extends SelectOption
@@ -78,6 +137,7 @@ export async function select<
     } as {
         ids: string[];
         count?: number;
+        aggr?: (Partial<ED[T]['Schema']> | undefined)[];
     };
     if (getCount) {
         const { filter } = selection;
@@ -91,17 +151,17 @@ export async function select<
         });
     }
 
-    /**
-     * 若selection的projection和filter中同时对某一个外键有限制，此时这条属性路径可能会有关于此对象的权限判定。
-     * 若此时Data为空，则路径上的中间对象不会被返回，会导致前台的权限判定不完整
-     * 如 sku的create权限（jichuang项目）, sku.companyService.company上有user relation
-     * 如果sku为空，也应当试着把companyService数据返回给前台
-     * by Xc 20230320
-     */
     if (data.length === 0) {
-        const { data,  filter } = selection;
+        /**
+         * 若selection的projection和filter中同时对某一个外键有限制，此时这条属性路径可能会有关于此对象的权限判定。
+         * 若此时Data为空，则路径上的中间对象不会被返回，会导致前台的权限判定不完整
+         * 如 sku的create权限（jichuang项目）, sku.companyService.company上有user relation
+         * 如果sku为空，也应当试着把companyService数据返回给前台
+         * by Xc 20230320
+         */
+        const { data, filter } = selection;
         for (const attr in data) {
-            const rel = judgeRelation(context.getSchema(), entity, attr);
+            const rel = judgeRelation<ED>(context.getSchema(), entity, attr);
             if (rel === 2) {
                 const f = filter && getCascadeEntityFilter(filter, attr);
                 if (f) {
@@ -111,7 +171,7 @@ export async function select<
                         indexFrom: 0,
                         count: 1,           // 取一行应该就够了
                     },
-                    option || {})
+                        option || {})
                 }
             }
             else if (typeof rel === 'string') {
@@ -123,16 +183,25 @@ export async function select<
                         indexFrom: 0,
                         count: 1,           // 取一行应该就够了
                     },
-                    option || {})
+                        option || {})
                 }
             }
+        }
+    }
+    else {
+        /**
+         * selection的projection中可能有aggr，这个结果前台需要返回
+         */
+        const aggrData = pruneAggrResult(context.getSchema(), entity, data);
+        if (aggrData) {
+            result.aggr = aggrData;            
         }
     }
     return result;
 }
 
 export async function aggregate<
-    ED extends EntityDict,
+    ED extends BaseEntityDict & EntityDict,
     T extends keyof ED,
     Cxt extends AsyncContext<ED>,
     OP extends SelectOption
@@ -149,14 +218,14 @@ export async function fetchRows<
     ED extends EntityDict & BaseEntityDict,
     OP extends SelectOption,
     Cxt extends AsyncContext<ED>,
->(
-    params: Array<{
-        entity: keyof ED;
-        selection: ED[keyof ED]['Selection'];
-        option?: OP;
-    }>,
-    context: Cxt
-) {
+    >(
+        params: Array<{
+            entity: keyof ED;
+            selection: ED[keyof ED]['Selection'];
+            option?: OP;
+        }>,
+        context: Cxt
+    ) {
     await Promise.all(
         params.map((ele) =>
             context.select(

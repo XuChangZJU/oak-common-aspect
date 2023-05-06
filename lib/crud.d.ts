@@ -6,7 +6,7 @@ export declare function operate<ED extends BaseEntityDict & EntityDict, T extend
     operation: ED[T]['Operation'] | ED[T]['Operation'][];
     option?: OP;
 }, context: Cxt): Promise<import("oak-domain/lib/types").OperationResult<ED> | Awaited<import("oak-domain/lib/types").OperationResult<ED>>[]>;
-export declare function select<ED extends EntityDict, T extends keyof ED, Cxt extends AsyncContext<ED>, OP extends SelectOption>(params: {
+export declare function select<ED extends BaseEntityDict & EntityDict, T extends keyof ED, Cxt extends AsyncContext<ED>, OP extends SelectOption>(params: {
     entity: T;
     selection: ED[T]['Selection'];
     option?: OP;
@@ -15,8 +15,9 @@ export declare function select<ED extends EntityDict, T extends keyof ED, Cxt ex
 }, context: Cxt): Promise<{
     ids: string[];
     count?: number | undefined;
+    aggr?: (Partial<ED[T]["Schema"]> | undefined)[] | undefined;
 }>;
-export declare function aggregate<ED extends EntityDict, T extends keyof ED, Cxt extends AsyncContext<ED>, OP extends SelectOption>(params: {
+export declare function aggregate<ED extends BaseEntityDict & EntityDict, T extends keyof ED, Cxt extends AsyncContext<ED>, OP extends SelectOption>(params: {
     entity: T;
     aggregation: ED[T]['Aggregation'];
     option?: OP;
