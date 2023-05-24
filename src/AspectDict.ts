@@ -76,4 +76,7 @@ export type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends
         count?: number;
         typeCode?: string;
     }) => Promise<{ id: string; areaId: string; poiName: string; detail: string; coordinate: [number, number] }[]>;
+    loadRelations: (params: {
+        entities: keyof ED[],
+    }, context: Cxt) => Promise<ED['userRelation']['OpSchema'][]>;
 };

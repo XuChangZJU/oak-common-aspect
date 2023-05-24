@@ -3,6 +3,7 @@ import { amap } from './amap';
 import { getTranslations } from './locales';
 import { registerPorts, clearPorts, importEntity, exportEntity, getImportationTemplate } from './port';
 import { searchPoi } from './geo';
+import { loadRelations } from './relation';
 declare const aspectDict: {
     operate: typeof operate;
     select: typeof select;
@@ -15,6 +16,7 @@ declare const aspectDict: {
     exportEntity: typeof exportEntity;
     getImportationTemplate: typeof getImportationTemplate;
     searchPoi: typeof searchPoi;
+    loadRelations: typeof loadRelations;
 };
 export default aspectDict;
 export * from './AspectDict';

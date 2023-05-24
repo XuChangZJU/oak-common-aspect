@@ -3,6 +3,7 @@ import { amap } from './amap';
 import { getTranslations } from './locales';
 import { registerPorts, clearPorts, importEntity, exportEntity, getImportationTemplate } from './port';
 import { searchPoi } from './geo';
+import { loadRelations } from './relation';
 
 const aspectDict = {
     operate,
@@ -16,6 +17,7 @@ const aspectDict = {
     exportEntity,
     getImportationTemplate,
     searchPoi,
+    loadRelations,
 };
 
 export default aspectDict;

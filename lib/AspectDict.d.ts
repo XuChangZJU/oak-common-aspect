@@ -64,4 +64,7 @@ export declare type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt
         detail: string;
         coordinate: [number, number];
     }[]>;
+    loadRelations: (params: {
+        entities: keyof ED[];
+    }, context: Cxt) => Promise<ED['userRelation']['OpSchema'][]>;
 };

@@ -158,8 +158,11 @@ export async function select<
          * 如 sku的create权限（jichuang项目）, sku.companyService.company上有user relation
          * 如果sku为空，也应当试着把companyService数据返回给前台
          * by Xc 20230320
+         * 
+         * 感觉已经不需要了，新的权限判定可以判定filter或者data上的cascade路径条件
+         * by Xc 20230519
          */
-        const { data, filter } = selection;
+        /* const { data, filter } = selection;
         for (const attr in data) {
             const rel = judgeRelation<ED>(context.getSchema(), entity, attr);
             if (rel === 2) {
@@ -186,7 +189,7 @@ export async function select<
                         option || {})
                 }
             }
-        }
+        } */
     }
     else {
         /**
