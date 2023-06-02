@@ -4,6 +4,7 @@ import { getTranslations } from './locales';
 import { registerPorts, clearPorts, importEntity, exportEntity, getImportationTemplate } from './port';
 import { searchPoi } from './geo';
 import { loadRelations } from './relation';
+import { crossBridge } from './utils';
 
 const aspectDict = {
     operate,
@@ -18,6 +19,7 @@ const aspectDict = {
     getImportationTemplate,
     searchPoi,
     loadRelations,
+    crossBridge,
 };
 
 export default aspectDict;

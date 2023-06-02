@@ -67,4 +67,7 @@ export declare type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt
     loadRelations: (params: {
         entities: keyof ED[];
     }, context: Cxt) => Promise<ED['userRelation']['OpSchema'][]>;
+    crossBridge: (params: {
+        url: string;
+    }) => Promise<ReadableStream<Uint8Array>>;
 };

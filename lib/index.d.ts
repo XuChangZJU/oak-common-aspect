@@ -4,6 +4,7 @@ import { getTranslations } from './locales';
 import { registerPorts, clearPorts, importEntity, exportEntity, getImportationTemplate } from './port';
 import { searchPoi } from './geo';
 import { loadRelations } from './relation';
+import { crossBridge } from './utils';
 declare const aspectDict: {
     operate: typeof operate;
     select: typeof select;
@@ -17,6 +18,7 @@ declare const aspectDict: {
     getImportationTemplate: typeof getImportationTemplate;
     searchPoi: typeof searchPoi;
     loadRelations: typeof loadRelations;
+    crossBridge: typeof crossBridge;
 };
 export default aspectDict;
 export * from './AspectDict';
