@@ -63,9 +63,9 @@ export async function loadRelations<
         },
         filter: {
             userId,
-            entity: {
+            /* entity: {
                 $in: entities as string[],
-            },
+            }, */
         },
     }, {});
     const result = userRelations.map(
