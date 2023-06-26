@@ -99,9 +99,11 @@ export async function exportEntity<
     entity: T;
     id: string;
     filter?: ED[T]['Selection']['filter'];
+    properties?: Record<string, any>;
 }, context: Cxt): Promise<ArrayBuffer> {
     const id = params.id;
     const filter = params.filter;
+    const properties = params.properties;
     const exportation = getExportation<ED, keyof ED>(id);
     if (!exportation) {
         throw new Error('尚不支持此数据的导出');
@@ -119,7 +121,7 @@ export async function exportEntity<
     assert(headers2 && headers2.length > 0, '导出未传入表头')
     const fittedDatalist = []
     for (const data of dataList) {
-        fittedDatalist.push(await fn(data as ED[keyof ED]['Schema'], context));
+        fittedDatalist.push(await fn(data as ED[keyof ED]['Schema'], context, properties));
     }
     const exportSheet = utils.json_to_sheet(fittedDatalist, { header: headers2 });
     const exportBook = utils.book_new();

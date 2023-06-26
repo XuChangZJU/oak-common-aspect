@@ -13,6 +13,7 @@ export declare function exportEntity<ED extends EntityDict, T extends keyof ED, 
     entity: T;
     id: string;
     filter?: ED[T]['Selection']['filter'];
+    properties?: Record<string, any>;
 }, context: Cxt): Promise<ArrayBuffer>;
 export declare function getImportationTemplate<ED extends EntityDict, Cxt extends AsyncContext<ED>>(params: {
     id: string;
