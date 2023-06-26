@@ -119,7 +119,7 @@ export async function exportEntity<
     assert(headers2 && headers2.length > 0, '导出未传入表头')
     const fittedDatalist = []
     for (const data of dataList) {
-        fittedDatalist.push(fn(data as ED[keyof ED]['Schema']));
+        fittedDatalist.push(await fn(data as ED[keyof ED]['Schema'], context));
     }
     const exportSheet = utils.json_to_sheet(fittedDatalist, { header: headers2 });
     const exportBook = utils.book_new();
