@@ -8,7 +8,7 @@ import { Duplex } from 'stream';
 const Importations: Record<string, any> = {};
 const Exportations: Record<string, any> = {};
 
-export function registerPorts<ED extends EntityDict>(importations: Importation<ED, keyof ED, any>[], exportations: Exportation<ED, keyof ED, any>[]) {
+export function registerPorts<ED extends EntityDict>(importations: Importation<ED, keyof ED, any>[], exportations: Exportation<ED, keyof ED>[]) {
     for (const i of importations) {
         assert(!Importations.hasOwnProperty(i.id), `Importation中的id【${i.id}】重复了`);
         Object.assign(Importations, {
@@ -40,7 +40,7 @@ function getImportation<ED extends EntityDict, T extends keyof ED>(id: string) {
 
 function getExportation<ED extends EntityDict, T extends keyof ED>(id: string) {
     assert(Exportations.hasOwnProperty(id), `id为[${id}]的exportation不存在`);
-    return Exportations[id] as Exportation<ED, T, any>;
+    return Exportations[id] as Exportation<ED, T>;
 }
 
 export async function importEntity<
@@ -106,7 +106,7 @@ export async function exportEntity<
     if (!exportation) {
         throw new Error('尚不支持此数据的导出');
     }
-    const { projection, headers, fn, entity } = exportation;
+    const { projection, headers, fn, entity, makeHeaders } = exportation;
     const dataList = await context.select(
         entity,
         {
@@ -115,11 +115,13 @@ export async function exportEntity<
         },
         {}
     );
+    const headers2 = makeHeaders ? makeHeaders(dataList) : headers;
+    assert(headers2 && headers2.length > 0, '导出未传入表头')
     const fittedDatalist = []
     for (const data of dataList) {
         fittedDatalist.push(fn(data as ED[keyof ED]['Schema']));
     }
-    const exportSheet = utils.json_to_sheet(fittedDatalist, { header: headers });
+    const exportSheet = utils.json_to_sheet(fittedDatalist, { header: headers2 });
     const exportBook = utils.book_new();
     utils.book_append_sheet(exportBook, exportSheet);
     return await write(exportBook, { type: 'buffer' });
