@@ -67,6 +67,7 @@ export type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends
         entity: T;
         id: string;
         filter?: ED[T]['Selection']['filter'];
+        properties: Record<string, any>;
     }, context: Cxt) => Promise<ArrayBuffer>;
     getImportationTemplate: (params: { id: string }, context: Cxt) => Promise<ArrayBuffer>;
     searchPoi: (options: {
