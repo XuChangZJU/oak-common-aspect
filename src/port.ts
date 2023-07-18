@@ -8,7 +8,7 @@ import { Duplex } from 'stream';
 const Importations: Record<string, any> = {};
 const Exportations: Record<string, any> = {};
 
-export function registerPorts<ED extends EntityDict>(importations: Importation<ED, keyof ED, any>[], exportations: Exportation<ED, keyof ED>[]) {
+export function registerPorts<ED extends EntityDict>(importations: Importation<ED, keyof ED, any>[], exportations: Exportation<ED, keyof ED, any>[]) {
     for (const i of importations) {
         assert(!Importations.hasOwnProperty(i.id), `Importation中的id【${i.id}】重复了`);
         Object.assign(Importations, {
@@ -40,7 +40,7 @@ function getImportation<ED extends EntityDict, T extends keyof ED>(id: string) {
 
 function getExportation<ED extends EntityDict, T extends keyof ED>(id: string) {
     assert(Exportations.hasOwnProperty(id), `id为[${id}]的exportation不存在`);
-    return Exportations[id] as Exportation<ED, T>;
+    return Exportations[id] as Exportation<ED, T, any>;
 }
 
 export async function importEntity<

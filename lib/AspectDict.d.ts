@@ -47,7 +47,7 @@ export declare type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt
         entity: T;
         id: string;
         filter?: ED[T]['Selection']['filter'];
-        properties: Record<string, any>;
+        properties?: Record<string, any>;
     }, context: Cxt) => Promise<ArrayBuffer>;
     getImportationTemplate: (params: {
         id: string;
