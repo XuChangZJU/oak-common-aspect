@@ -38,7 +38,7 @@ export async function loadRelations<
                     $entity: 'actionAuth',
                     data: {
                         id: 1,
-                        path: 1,
+                        paths: 1,
                         destEntity: 1,
                         deActions: 1,
                     },

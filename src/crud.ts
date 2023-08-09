@@ -9,7 +9,6 @@ import {
 import { EntityDict as BaseEntityDict } from 'oak-domain/lib/base-app-domain';
 import { AsyncContext } from 'oak-domain/lib/store/AsyncRowStore';
 import { judgeRelation } from 'oak-domain/lib/store/relation';
-import { getCascadeEntityFilter } from 'oak-domain/lib/store/filter';
 import assert from 'assert';
 
 export async function operate<
