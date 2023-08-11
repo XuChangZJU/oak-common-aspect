@@ -126,9 +126,46 @@ export async function select<
     context: Cxt
 ) {
     const { entity, selection, option, getCount, maxCount } = params;
+    const { randomRange, count } = selection;
+    let selection2 = selection;
+    if (randomRange) {
+        // 如果是随机取值，这里就从randomRange的ids中随机取
+        const idSelection = Object.assign({}, selection, {
+            indexFrom: 0,
+            count: randomRange,
+            data: {
+                id: 1,
+            },
+        });
+
+        const ids = await context.select(
+            entity,
+            idSelection,
+            option || {}
+        );
+
+        const possibility = count! / ids.length;
+        let reduced = ids.length - count!;
+        const ids2 = ids.filter(
+            (id) => {
+                const rand = Math.random();
+                if (rand > possibility && reduced) {
+                    reduced --;
+                    return false;
+                }
+                return true;
+            }
+        );
+
+        selection2.filter = {
+            id: {
+                $in: ids2,
+            },
+        };
+    }
     const data = await context.select(
         entity,
-        selection,
+        selection2,
         option || {}
     );
     const result = {
@@ -138,7 +175,7 @@ export async function select<
         count?: number;
         aggr?: (Partial<ED[T]['Schema']> | undefined)[];
     };
-    if (getCount) {
+    if (getCount && !randomRange) {
         const { filter } = selection;
         const count = await context.count(
             entity,
@@ -151,49 +188,8 @@ export async function select<
     }
 
     if (data.length === 0) {
-        /**
-         * 若selection的projection和filter中同时对某一个外键有限制，此时这条属性路径可能会有关于此对象的权限判定。
-         * 若此时Data为空，则路径上的中间对象不会被返回，会导致前台的权限判定不完整
-         * 如 sku的create权限（jichuang项目）, sku.companyService.company上有user relation
-         * 如果sku为空，也应当试着把companyService数据返回给前台
-         * by Xc 20230320
-         * 
-         * 感觉已经不需要了，新的权限判定可以判定filter或者data上的cascade路径条件
-         * by Xc 20230519
-         */
-        /* const { data, filter } = selection;
-        for (const attr in data) {
-            const rel = judgeRelation<ED>(context.getSchema(), entity, attr);
-            if (rel === 2) {
-                const f = filter && getCascadeEntityFilter(filter, attr);
-                if (f) {
-                    await context.select(attr, {
-                        data: data[attr],
-                        filter: f,
-                        indexFrom: 0,
-                        count: 1,           // 取一行应该就够了
-                    },
-                        option || {})
-                }
-            }
-            else if (typeof rel === 'string') {
-                const f = filter && getCascadeEntityFilter(filter, attr);
-                if (f) {
-                    await context.select(rel, {
-                        data: data[attr],
-                        filter: f,
-                        indexFrom: 0,
-                        count: 1,           // 取一行应该就够了
-                    },
-                        option || {})
-                }
-            }
-        } */
     }
     else {
-        /**
-         * selection的projection中可能有aggr，这个结果前台需要返回
-         */
         const aggrData = pruneAggrResult(context.getSchema(), entity, data);
         if (aggrData) {
             result.aggr = aggrData;            
