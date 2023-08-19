@@ -25,11 +25,11 @@ export async function operate<
     context: Cxt
 ) {
     const { entity, operation, option } = params;
-    const userId = context.getCurrentUserId();
+    /* const userId = context.getCurrentUserId();
     if (!userId) {
         // operate默认必须用户登录
         throw new OakUnloggedInException();
-    }
+    } */
     if (!context.allowUserUpdate()) {
         throw new OakUserUnpermittedException('您被禁更新');
     }
