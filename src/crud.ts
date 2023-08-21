@@ -138,15 +138,15 @@ export async function select<
             },
         });
 
-        const ids = await context.select(
+        const idResults = await context.select(
             entity,
             idSelection,
             option || {}
         );
 
-        const possibility = count! / ids.length;
-        let reduced = ids.length - count!;
-        const ids2 = ids.filter(
+        const possibility = count! / idResults.length;
+        let reduced = idResults.length - count!;
+        const ids2 = idResults.map(ele => ele.id).filter(
             (id) => {
                 const rand = Math.random();
                 if (rand > possibility && reduced) {
