@@ -9,7 +9,7 @@ import {
 import { EntityDict as BaseEntityDict } from 'oak-domain/lib/base-app-domain';
 import { AsyncContext } from 'oak-domain/lib/store/AsyncRowStore';
 import { judgeRelation } from 'oak-domain/lib/store/relation';
-import assert from 'assert';
+import { assert } from 'oak-domain/lib/utils/assert';
 
 export async function operate<
     ED extends BaseEntityDict & EntityDict,

@@ -1,30 +1,35 @@
 {
-  "name": "oak-common-aspect",
-  "version": "2.2.2",
-  "description": "",
-  "author": {
-    "name": "XuChang"
-  },
-  "files": [
-    "lib/**/*"
-  ],
-  "main": "lib/index",
-  "scripts": {
-    "test": "test",
-    "build": "tsc"
-  },
-  "license": "ISC",
-  "dependencies": {
-    "lodash": "^4.17.21",
-    "oak-domain": "file:../oak-domain",
-    "oak-external-sdk": "file:../oak-external-sdk",
-    "xlsx": "^0.18.5"
-  },
-  "devDependencies": {
-    "@types/node": "^18.0.0",
-    "assert": "^2.0.0",
-    "ts-node": "~10.9.1",
-    "tslib": "^2.4.0",
-    "typescript": "~4.7.4"
-  }
+    "name": "oak-common-aspect",
+    "version": "2.2.2",
+    "description": "",
+    "author": {
+        "name": "XuChang"
+    },
+    "files": [
+        "lib/**/*"
+    ],
+    "main": "lib/index",
+    "module": "es/index",
+    "types": "es/index.d.ts",
+    "typings": "es/index.d.ts",
+    "scripts": {
+        "test": "test",
+        "build": "tsc -p tsconfig.json",
+        "build-es": "tsc -p tsconfig.es.json"
+    },
+    "license": "ISC",
+    "dependencies": {
+        "lodash": "^4.17.21",
+        "oak-domain": "file:../oak-domain",
+        "oak-external-sdk": "file:../oak-external-sdk",
+        "xlsx": "^0.18.5"
+    },
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "@types/lodash": "^4.14.182",
+        "assert": "^2.0.0",
+        "ts-node": "~10.9.1",
+        "tslib": "^2.4.0",
+        "typescript": "~4.7.4"
+    }
 }
