@@ -14,8 +14,7 @@
     "typings": "es/index.d.ts",
     "scripts": {
         "test": "test",
-        "build": "tsc -p tsconfig.json",
-        "build-es": "tsc -p tsconfig.es.json"
+        "build": "tsc -p tsconfig.json && tsc -p tsconfig.es.json"
     },
     "license": "ISC",
     "dependencies": {
