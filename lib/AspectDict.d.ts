@@ -2,7 +2,7 @@ import { EntityDict, OperateOption, SelectOption, OperationResult, AggregationRe
 import { AmapInstance } from "oak-external-sdk";
 import { EntityDict as BaseEntityDict } from 'oak-domain/lib/base-app-domain';
 import { AsyncContext } from "oak-domain/lib/store/AsyncRowStore";
-export declare type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends AsyncContext<ED>> = {
+export type CommonAspectDict<ED extends EntityDict & BaseEntityDict, Cxt extends AsyncContext<ED>> = {
     operate: <T extends keyof ED, OP extends OperateOption>(params: {
         entity: T;
         operation: ED[T]['Operation'] | ED[T]['Operation'][];
