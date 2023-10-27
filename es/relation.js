@@ -23,8 +23,14 @@ export async function loadRelations(params, context) {
                     $entity: 'actionAuth',
                     data: {
                         id: 1,
-                        paths: 1,
-                        destEntity: 1,
+                        pathId: 1,
+                        path: {
+                            id: 1,
+                            sourceEntity: 1,
+                            destEntity: 1,
+                            value: 1,
+                            recursive: 1,
+                        },
                         deActions: 1,
                     },
                 },
@@ -41,7 +47,14 @@ export async function loadRelations(params, context) {
                             name: 1,
                             display: 1,
                         },
-                        path: 1,
+                        pathId: 1,
+                        path: {
+                            id: 1,
+                            sourceEntity: 1,
+                            destEntity: 1,
+                            value: 1,
+                            recursive: 1,
+                        },
                     },
                 }
             },
