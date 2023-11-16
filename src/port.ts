@@ -9,8 +9,8 @@ const Importations: Record<string, any> = {};
 const Exportations: Record<string, any> = {};
 
 export function registerPorts<ED extends EntityDict>(
-    importations: Importation<ED, keyof ED, any>[],
-    exportations: Exportation<ED, keyof ED, any>[]
+    importations: Importation<ED, keyof ED, any, any>[],
+    exportations: Exportation<ED, keyof ED, any, any>[]
 ) {
     for (const i of importations) {
         assert(
@@ -44,12 +44,12 @@ export function clearPorts() {
 
 function getImportation<ED extends EntityDict, T extends keyof ED>(id: string) {
     assert(Importations.hasOwnProperty(id), `id为[${id}]的importation不存在`);
-    return Importations[id] as Importation<ED, T, any>;
+    return Importations[id] as Importation<ED, T, any, any>;
 }
 
 function getExportation<ED extends EntityDict, T extends keyof ED>(id: string) {
     assert(Exportations.hasOwnProperty(id), `id为[${id}]的exportation不存在`);
-    return Exportations[id] as Exportation<ED, T, any>;
+    return Exportations[id] as Exportation<ED, T, any, any>;
 }
 
 export async function importEntity<

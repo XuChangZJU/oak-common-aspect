@@ -53,61 +53,69 @@ export async function operate<
     );
 }
 
-function pruneAggrResult<
-    ED extends BaseEntityDict & EntityDict,
-    T extends keyof ED>(schema: StorageSchema<ED>, entity: T, result: Partial<ED[T]['Schema']>[]) {
-    
-    const pruneInner = (e: keyof ED, r: Partial<ED[keyof ED]['Schema']>): Partial<ED[keyof ED]['Schema']> | undefined => {
-        const r2 = {};
-        let hasAggr = false;
+/**
+ * 因为有cascadeSelect，这里要按查询的要求build返回的结构树，告知每一层上相关的id/total/aggr信息
+ * @param schema 
+ * @param entity 
+ * @param result 
+ * @returns 
+ */
+function buildResultTree<ED extends BaseEntityDict & EntityDict, T extends keyof ED>(
+    schema: StorageSchema<ED>, 
+    entity: T, 
+    result: Partial<ED[T]['Schema']>[]
+) {
+    const pruneInner = (e: keyof ED, r: Partial<ED[keyof ED]['Schema']>, tree: Record<string, any>) => {
         for (const attr in r) {
             if (attr.endsWith('$$aggr')) {
-                hasAggr = true;
-                Object.assign(r2, {
-                    [attr]: r[attr],
-                });
+                tree[attr] = r[attr];
             }
             else if (typeof r[attr] === 'object') {
                 const rel = judgeRelation(schema, e, attr);
                 if (rel === 2 || typeof rel === 'string') {
-                    const rr = pruneInner(rel === 2 ? attr : rel, r[attr]!);
-                    if (rr) {
-                        hasAggr = true;
-                        Object.assign(r2, {
-                            [attr]: rr,
-                        });
-                    }
+                    tree[attr] = {};
+                    pruneInner(rel === 2 ? attr : rel, r[attr]!, tree[attr]);
                 }
                 else if (rel instanceof Array) {
                     assert(r[attr] as any instanceof Array);
-                    const rr = r[attr].map(
-                        (ele: any) => pruneInner(rel[0], ele)
-                    );
-                    if (rr.find(
-                        (ele: any) => !ele
-                    )) {
-                        hasAggr = true;
-                        Object.assign(r2, {
-                            [attr]: rr,
-                        });
+                    tree[attr] = {
+                        data: {},
+                    };
+                    if (r[attr].hasOwnProperty('#total')) {
+                        tree[attr].total = r[attr]['#total'];
                     }
+                    r[attr].forEach(
+                        (rr: any) => {
+                            tree[attr].data[rr.id as string] = {};
+                            pruneInner(rel[0], rr, tree[attr].data[rr.id as string]);
+                        }
+                    )
                 }
             }
         }
-        if (hasAggr) {
-            return r2;
-        }
-        return;
     };
 
-    const result2 = result.map(
-        (row) => pruneInner(entity, row)
-    );
-    if (result2.find(
-        ele => !!ele
-    )) {
-        return result2;
+    const root = {
+        data: {},
+    } as {
+        data: Record<string, any>;
+        total?: number;
     }
+
+    /**
+     * 这个total是在cascadeStore的selectAsync处理的，有点古怪
+     */
+    if (result.hasOwnProperty('#total')) {
+        root.total = (result as any)['#total'];
+    }
+
+    result.forEach(
+        (row) => {
+            root.data[row.id!] = {};
+            pruneInner(entity, row, root.data[row.id!]);
+        }
+    );
+    return root;
 }
 
 export async function select<
@@ -125,77 +133,16 @@ export async function select<
     },
     context: Cxt
 ) {
-    const { entity, selection, option, getCount, maxCount } = params;
-    const { randomRange, count } = selection;
+    const { entity, selection, option } = params;
     let selection2 = selection;
-    if (randomRange) {
-        // 如果是随机取值，这里就从randomRange的ids中随机取
-        const idSelection = Object.assign({}, selection, {
-            indexFrom: 0,
-            count: randomRange,
-            data: {
-                id: 1,
-            },
-        });
-
-        const idResults = await context.select(
-            entity,
-            idSelection,
-            option || {}
-        );
-
-        const possibility = count! / idResults.length;
-        let reduced = idResults.length - count!;
-        const ids2 = idResults.map(ele => ele.id).filter(
-            (id) => {
-                const rand = Math.random();
-                if (rand > possibility && reduced) {
-                    reduced --;
-                    return false;
-                }
-                return true;
-            }
-        );
-
-        selection2.filter = {
-            id: {
-                $in: ids2,
-            },
-        };
-    }
+    
     const data = await context.select(
         entity,
         selection2,
         option || {}
     );
-    const result = {
-        ids: data.map(ele => ele.id),
-    } as {
-        ids: string[];
-        count?: number;
-        aggr?: (Partial<ED[T]['Schema']> | undefined)[];
-    };
-    if (getCount && !randomRange) {
-        const { filter } = selection;
-        const count = await context.count(
-            entity,
-            Object.assign({}, { filter, count: maxCount || 1000 }),
-            option || {}
-        );
-        Object.assign(result, {
-            count,
-        });
-    }
 
-    if (data.length === 0) {
-    }
-    else {
-        const aggrData = pruneAggrResult(context.getSchema(), entity, data);
-        if (aggrData) {
-            result.aggr = aggrData;            
-        }
-    }
-    return result;
+    return buildResultTree(context.getSchema(), entity, data);
 }
 
 export async function aggregate<

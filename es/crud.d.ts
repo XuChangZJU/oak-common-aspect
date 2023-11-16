@@ -13,9 +13,8 @@ export declare function select<ED extends BaseEntityDict & EntityDict, T extends
     getCount?: true;
     maxCount?: number;
 }, context: Cxt): Promise<{
-    ids: string[];
-    count?: number | undefined;
-    aggr?: (Partial<ED[T]["Schema"]> | undefined)[] | undefined;
+    data: Record<string, any>;
+    total?: number | undefined;
 }>;
 export declare function aggregate<ED extends BaseEntityDict & EntityDict, T extends keyof ED, Cxt extends AsyncContext<ED>, OP extends SelectOption>(params: {
     entity: T;
