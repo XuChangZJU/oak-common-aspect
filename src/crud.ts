@@ -73,8 +73,11 @@ function buildResultTree<ED extends BaseEntityDict & EntityDict, T extends keyof
             else if (typeof r[attr] === 'object') {
                 const rel = judgeRelation(schema, e, attr);
                 if (rel === 2 || typeof rel === 'string') {
-                    tree[attr] = {};
-                    pruneInner(rel === 2 ? attr : rel, r[attr]!, tree[attr]);
+                    const son = {}
+                    pruneInner(rel === 2 ? attr : rel, r[attr]!, son);
+                    if (Object.keys(son).length > 0) {
+                        tree[attr] = son;
+                    }
                 }
                 else if (rel instanceof Array) {
                     assert(r[attr] as any instanceof Array);
