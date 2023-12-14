@@ -6,7 +6,8 @@
         "name": "XuChang"
     },
     "files": [
-        "lib/**/*"
+        "lib/**/*",
+        "es/**/*"
     ],
     "main": "lib/index",
     "module": "es/index",
