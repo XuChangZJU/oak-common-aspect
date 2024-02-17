@@ -31,7 +31,7 @@ export async function operate<
         throw new OakUnloggedInException();
     } */
     if (!context.allowUserUpdate()) {
-        throw new OakUserUnpermittedException('您被禁更新');
+        throw new OakUserUnpermittedException(entity, operation instanceof Array ? operation[0] : operation, '您被禁更新');
     }
 
     if (operation instanceof Array) {
