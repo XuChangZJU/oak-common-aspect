@@ -5,7 +5,7 @@ export declare function operate<ED extends BaseEntityDict & EntityDict, T extend
     entity: T;
     operation: ED[T]['Operation'] | ED[T]['Operation'][];
     option?: OP;
-}, context: Cxt): Promise<import("oak-domain/lib/types").OperationResult<ED> | import("oak-domain/lib/types").OperationResult<ED>[]>;
+}, context: Cxt): Promise<import("oak-domain/lib/types").OperationResult<ED> | Awaited<import("oak-domain/lib/types").OperationResult<ED>>[]>;
 export declare function select<ED extends BaseEntityDict & EntityDict, T extends keyof ED, Cxt extends AsyncContext<ED>, OP extends SelectOption>(params: {
     entity: T;
     selection: ED[T]['Selection'];

@@ -1,5 +1,5 @@
 import { EntityDict, OperateOption, SelectOption, OperationResult, AggregationResult } from "oak-domain/lib/types";
-import { AmapInstance } from "oak-external-sdk";
+import { AmapInstance } from "oak-external-sdk/lib/service/amap/Amap";
 import { EntityDict as BaseEntityDict } from 'oak-domain/lib/base-app-domain';
 import { AsyncContext } from "oak-domain/lib/store/AsyncRowStore";
 

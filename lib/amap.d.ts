@@ -1,4 +1,4 @@
-import { AmapInstance } from 'oak-external-sdk';
+import { AmapInstance } from "oak-external-sdk/lib/service/amap/Amap";
 export declare function amap<T extends 'getDrivingPath' | 'regeo' | 'ipLoc' | 'getDistrict' | 'geocode'>(options: {
     key: string;
     method: T;
